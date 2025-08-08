@@ -4,11 +4,13 @@ services:
     plan: free
     region: oregon
     buildCommand: |
-      npm install
-      npm run build
-      npm run export
+      yarn install
+      yarn add eslint@latest --dev
+      yarn add @eslint/config-array@latest @eslint/object-schema@latest rimraf@latest glob@latest --dev
+      yarn build
+      yarn export
     staticPublishPath: out
     envVars:
       - key: NEXT_PUBLIC_API_BASE_URL
-        value: https://outreach-pilot-backend.onrender.com
+        value: https://your-backend-url.onrender.com
     autoDeploy: true

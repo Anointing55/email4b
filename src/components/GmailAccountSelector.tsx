@@ -2,16 +2,17 @@ import React from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 
-interface GmailAccountSelectorProps {
+export const GmailAccountSelector = ({ 
+  value, 
+  onChange 
+}: {
   value: string;
   onChange: (value: string) => void;
-}
-
-export const GmailAccountSelector = ({ value, onChange }: GmailAccountSelectorProps) => {
-  // This is a placeholder. In a real component, you would fetch the connected Gmail accounts.
+}) => {
+  // Mock data - replace with real data from your app
   const accounts = [
-    { id: '1', email: 'example1@gmail.com' },
-    { id: '2', email: 'example2@gmail.com' },
+    { id: '1', email: 'user1@gmail.com' },
+    { id: '2', email: 'user2@gmail.com' },
   ];
 
   return (

@@ -1,57 +1,60 @@
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 
-interface Recipient {
-  email: string;
-  name?: string;
-  domain?: string;
-}
-
-interface RecipientUploaderProps {
-  recipients: Recipient[];
-  setRecipients: (recipients: Recipient[]) => void;
-}
-
-export const RecipientUploader = ({ recipients, setRecipients }: RecipientUploaderProps) => {
+export const RecipientUploader = ({ 
+  recipients, 
+  setRecipients 
+}: {
+  recipients: any[];
+  setRecipients: (recipients: any[]) => void;
+}) => {
   const [inputValue, setInputValue] = useState('');
 
   const handleAddRecipient = () => {
-    const emails = inputValue.split(',').map(email => email.trim()).filter(email => email);
-    const newRecipients = emails.map(email => {
-      // Extract domain from email
-      const domain = email.split('@')[1];
-      return { email, domain };
-    });
+    const emails = inputValue.split(',')
+      .map(email => email.trim())
+      .filter(email => email);
+    
+    const newRecipients = emails.map(email => ({
+      email,
+      domain: email.split('@')[1] || ''
+    }));
+    
     setRecipients([...recipients, ...newRecipients]);
     setInputValue('');
   };
 
+  const removeRecipient = (index: number) => {
+    setRecipients(recipients.filter((_, i) => i !== index));
+  };
+
   return (
-    <div>
-      <div className="flex space-x-2">
+    <div className="space-y-4">
+      <div className="flex gap-2">
         <input
           type="text"
           value={inputValue}
-          onChange={(e) => setInputValue(e.target.value)}
-          placeholder="Enter emails, comma separated"
-          className="border border-gray-300 rounded-lg px-3 py-2 flex-grow"
+          onChange={e => setInputValue(e.target.value)}
+          placeholder="Enter emails, separated by commas"
+          className="border border-gray-300 rounded-lg px-3 py-2 flex-1"
         />
         <Button onClick={handleAddRecipient}>Add</Button>
       </div>
-      <ul className="mt-4">
+      
+      <div className="max-h-60 overflow-y-auto">
         {recipients.map((recipient, index) => (
-          <li key={index} className="flex justify-between items-center py-2 border-b">
+          <div key={index} className="flex justify-between items-center py-2 border-b">
             <span>{recipient.email}</span>
             <Button 
-              variant="destructive"
+              variant="destructive" 
               size="sm"
-              onClick={() => setRecipients(recipients.filter((_, i) => i !== index))}
+              onClick={() => removeRecipient(index)}
             >
               Remove
             </Button>
-          </li>
+          </div>
         ))}
-      </ul>
+      </div>
     </div>
   );
 };
