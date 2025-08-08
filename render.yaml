@@ -1,0 +1,14 @@
+services:
+  - type: static
+    name: outreach-pilot-frontend
+    plan: free
+    region: oregon
+    buildCommand: |
+      npm install
+      npm run build
+      npm run export
+    staticPublishPath: out
+    envVars:
+      - key: NEXT_PUBLIC_API_BASE_URL
+        value: https://outreach-pilot-backend.onrender.com
+    autoDeploy: true
