@@ -3,14 +3,9 @@ services:
     name: outreach-pilot-frontend
     plan: free
     region: oregon
-    buildCommand: |
-      yarn install
-      yarn add eslint@latest --dev
-      yarn add @eslint/config-array@latest @eslint/object-schema@latest rimraf@latest glob@latest --dev
-      yarn build
-      yarn export
+    buildCommand: rm -f package-lock.json && yarn install && yarn build && yarn export
     staticPublishPath: out
     envVars:
       - key: NEXT_PUBLIC_API_BASE_URL
-        value: https://your-backend-url.onrender.com
+        value: https://<your-backend-url>.onrender.com
     autoDeploy: true

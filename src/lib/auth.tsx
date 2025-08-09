@@ -24,7 +24,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const router = useRouter();
   const API_URL = process.env.NEXT_PUBLIC_API_URL || "";
 
-  // Check auth state on mount
+  // Check authentication state on mount
   useEffect(() => {
     const checkAuth = async () => {
       try {
@@ -32,11 +32,11 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
           credentials: "include",
         });
         if (res.ok) {
-          const userData = await res.json();
+          const userData: User = await res.json();
           setUser(userData);
         }
       } catch (error) {
-        console.error("Auth check failed", error);
+        console.error("Auth check failed:", error);
       } finally {
         setLoading(false);
       }
@@ -59,7 +59,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         throw new Error(message);
       }
 
-      const userData = await res.json();
+      const userData: User = await res.json();
       setUser(userData);
       router.push("/dashboard");
     } finally {
@@ -82,7 +82,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         throw new Error(message);
       }
 
-      const userData = await res.json();
+      const userData: User = await res.json();
       setUser(userData);
       router.push("/dashboard");
     } finally {
@@ -113,6 +113,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
 export const useAuth = () => {
   const context = useContext(AuthContext);
-  if (!context) throw new Error("useAuth must be used within an AuthProvider");
+  if (!context) {
+    throw new Error("useAuth must be used within an AuthProvider");
+  }
   return context;
 };
