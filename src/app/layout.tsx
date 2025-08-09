@@ -1,7 +1,7 @@
 import './globals.css';
 import { Inter } from 'next/font/google';
 import { metadata as siteMetadata } from './metadata';
-import ClientLayout from './ClientLayout';
+import { AuthProvider } from '@/context/AuthContext';
 
 // Load Inter font
 const inter = Inter({ subsets: ['latin'] });
@@ -19,7 +19,9 @@ export default function RootLayout({
       <body
         className={`${inter.className} bg-gradient-to-br from-indigo-50 to-purple-50`}
       >
-        <ClientLayout>{children}</ClientLayout>
+        <AuthProvider>
+          {children}
+        </AuthProvider>
       </body>
     </html>
   );
