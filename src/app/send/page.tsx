@@ -1,4 +1,5 @@
 "use client";
+
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
@@ -8,11 +9,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { GmailAccountSelector } from "@/components/GmailAccountSelector";
 import { RecipientUploader } from "@/components/RecipientUploader";
 import { Loader2 } from "lucide-react";
-
-type Recipient = {
-  email: string;
-  name?: string;
-};
+import type { Recipient } from "@/types/recipient";
 
 export default function SendPage() {
   const router = useRouter();
@@ -44,7 +41,7 @@ export default function SendPage() {
       });
 
       if (!res.ok) {
-        throw new Error("Failed to create campaign");
+        throw new Error(await res.text());
       }
 
       router.push("/history");
@@ -68,6 +65,7 @@ export default function SendPage() {
 
           <CardContent className="p-6">
             <form onSubmit={handleSubmit} className="space-y-6">
+              {/* Gmail Account Selector */}
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
                   Select Gmail Account
@@ -78,6 +76,7 @@ export default function SendPage() {
                 />
               </div>
 
+              {/* Recipients */}
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
                   Upload Recipients
@@ -93,6 +92,7 @@ export default function SendPage() {
                 )}
               </div>
 
+              {/* Subject */}
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
                   Subject
@@ -104,6 +104,7 @@ export default function SendPage() {
                 />
               </div>
 
+              {/* Body */}
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
                   Message Body
@@ -116,6 +117,7 @@ export default function SendPage() {
                 />
               </div>
 
+              {/* Submit */}
               <div className="flex justify-end">
                 <Button type="submit" disabled={loading}>
                   {loading ? (

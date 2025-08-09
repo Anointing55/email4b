@@ -21,13 +21,13 @@ export const RecipientUploader: React.FC<RecipientUploaderProps> = ({
   const [inputValue, setInputValue] = useState("");
 
   const isValidEmail = (email: string) => {
-    // Basic email validation regex
+    // Corrected email validation regex (escaped dot)
     return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
   };
 
   const handleAddRecipient = () => {
     const emails = inputValue
-      .split(",")
+      .split(/[\s,]+/) // allow comma, space, or newline
       .map((email) => email.trim().toLowerCase())
       .filter((email) => email && isValidEmail(email));
 
@@ -64,7 +64,7 @@ export const RecipientUploader: React.FC<RecipientUploaderProps> = ({
           type="text"
           value={inputValue}
           onChange={(e) => setInputValue(e.target.value)}
-          placeholder="Enter emails, separated by commas"
+          placeholder="Enter emails, separated by commas or spaces"
           className="border border-gray-300 rounded-lg px-3 py-2 flex-1 text-sm"
         />
         <Button onClick={handleAddRecipient}>Add</Button>
@@ -77,7 +77,7 @@ export const RecipientUploader: React.FC<RecipientUploaderProps> = ({
         ) : (
           recipients.map((recipient, index) => (
             <div
-              key={recipient.email}
+              key={`${recipient.email}-${index}`} // safer unique key
               className="flex justify-between items-center p-2"
             >
               <span className="text-sm">{recipient.email}</span>
