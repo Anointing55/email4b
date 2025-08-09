@@ -3,9 +3,12 @@ services:
     name: outreach-pilot-frontend
     plan: free
     region: oregon
-    buildCommand: rm -f package-lock.json && yarn install && yarn build && yarn export
-    staticPublishPath: out
+    buildCommand: |
+      yarn install
+      yarn build
+      yarn export
+    staticPublishPath: out  # Change from 'build' to 'out'
     envVars:
       - key: NEXT_PUBLIC_API_BASE_URL
-        value: https://<your-backend-url>.onrender.com
+        value: https://outreach-pilot-backend.onrender.com
     autoDeploy: true
