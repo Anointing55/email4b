@@ -24,12 +24,13 @@ export default function HistoryPage() {
 
   useEffect(() => {
     const fetchCampaigns = async () => {
+      setLoading(true);
       try {
         const response = await fetch(
-          `/api/campaigns?search=${searchTerm}&date=${dateFilter}`
+          `/api/campaigns?search=${encodeURIComponent(searchTerm)}&date=${dateFilter}`
         );
         const data = await response.json();
-        setCampaigns(data);
+        setCampaigns(Array.isArray(data) ? data : []);
       } catch (error) {
         console.error("Failed to fetch campaigns", error);
       } finally {
@@ -42,6 +43,7 @@ export default function HistoryPage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-indigo-50 to-purple-50">
+      {/* Header */}
       <header className="bg-white shadow-sm">
         <div className="container mx-auto px-4 py-4 flex justify-between items-center">
           <h1 className="text-2xl font-bold bg-gradient-to-r from-purple-600 to-indigo-600 bg-clip-text text-transparent">
@@ -50,15 +52,17 @@ export default function HistoryPage() {
         </div>
       </header>
 
+      {/* Main Content */}
       <div className="container mx-auto px-4 py-8">
         <Card className="bg-white border-0 shadow-lg rounded-xl overflow-hidden">
+          {/* Filters */}
           <CardHeader className="bg-gradient-to-r from-indigo-50 to-purple-50 border-b p-4">
             <div className="flex flex-col md:flex-row justify-between items-center gap-4">
               <CardTitle className="text-xl font-semibold text-indigo-800">
                 Sent Campaigns
               </CardTitle>
-
               <div className="flex flex-col sm:flex-row gap-2 w-full md:w-auto">
+                {/* Search */}
                 <div className="relative w-full">
                   <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
                   <Input
@@ -68,8 +72,9 @@ export default function HistoryPage() {
                     className="pl-10 w-full"
                   />
                 </div>
-
+                {/* Date Filter */}
                 <div className="relative">
+                  <Filter className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400 pointer-events-none" />
                   <select
                     value={dateFilter}
                     onChange={(e) => setDateFilter(e.target.value)}
@@ -80,12 +85,12 @@ export default function HistoryPage() {
                     <option value="month">Last 30 Days</option>
                     <option value="year">Last Year</option>
                   </select>
-                  <Filter className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
                 </div>
               </div>
             </div>
           </CardHeader>
 
+          {/* Table Content */}
           <CardContent className="p-0">
             {loading ? (
               <div className="flex justify-center items-center h-64">
@@ -117,19 +122,18 @@ export default function HistoryPage() {
                 </TableHeader>
                 <TableBody>
                   {campaigns.map((campaign) => (
-                    <TableRow
-                      key={campaign.id}
-                      className="hover:bg-indigo-50"
-                    >
+                    <TableRow key={campaign.id} className="hover:bg-indigo-50">
                       <TableCell className="font-medium">
-                        {new Date(campaign.created_at).toLocaleDateString()}
+                        {campaign.created_at
+                          ? new Date(campaign.created_at).toLocaleDateString()
+                          : "N/A"}
                       </TableCell>
-                      <TableCell>{campaign.subject}</TableCell>
+                      <TableCell>{campaign.subject || "No subject"}</TableCell>
                       <TableCell>
-                        {campaign.gmailAccount.gmail_address}
+                        {campaign.gmailAccount?.gmail_address || "Unknown"}
                       </TableCell>
                       <TableCell>
-                        {campaign._count.messages} recipients
+                        {campaign._count?.messages || 0} recipients
                       </TableCell>
                       <TableCell>
                         <span
@@ -141,7 +145,7 @@ export default function HistoryPage() {
                               : "bg-yellow-100 text-yellow-800"
                           }`}
                         >
-                          {campaign.status}
+                          {campaign.status || "unknown"}
                         </span>
                       </TableCell>
                       <TableCell className="text-right">
