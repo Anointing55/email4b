@@ -1,29 +1,36 @@
 import React from 'react';
 
-export const Table = ({ children }: { children: React.ReactNode }) => (
-  <table className="min-w-full divide-y divide-gray-200">{children}</table>
+interface TableProps {
+  children: React.ReactNode;
+  className?: string;
+}
+
+export const Table = ({ children, className = '' }: TableProps) => (
+  <table className={`min-w-full divide-y divide-gray-200 ${className}`}>{children}</table>
 );
 
-export const TableHeader = ({ children }: { children: React.ReactNode }) => (
-  <thead className="bg-gray-50">{children}</thead>
+export const TableHeader = ({ children, className = '' }: TableProps) => (
+  <thead className={`bg-gray-50 ${className}`}>{children}</thead>
 );
 
-export const TableBody = ({ children }: { children: React.ReactNode }) => (
-  <tbody className="bg-white divide-y divide-gray-200">{children}</tbody>
+export const TableBody = ({ children, className = '' }: TableProps) => (
+  <tbody className={`bg-white divide-y divide-gray-200 ${className}`}>{children}</tbody>
 );
 
-export const TableRow = ({ children }: { children: React.ReactNode }) => (
-  <tr>{children}</tr>
+export const TableRow = ({ children, className = '' }: TableProps) => (
+  <tr className={className}>{children}</tr>
 );
 
-export const TableHead = ({ children }: { children: React.ReactNode }) => (
-  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+export const TableHead = ({ children, className = '' }: TableProps) => (
+  <th
+    className={`px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider ${className}`}
+  >
     {children}
   </th>
 );
 
-export const TableCell = ({ children }: { children: React.ReactNode }) => (
-  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+export const TableCell = ({ children, className = '' }: TableProps) => (
+  <td className={`px-6 py-4 whitespace-nowrap text-sm text-gray-500 ${className}`}>
     {children}
   </td>
 );
