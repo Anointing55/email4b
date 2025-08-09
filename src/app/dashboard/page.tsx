@@ -7,19 +7,22 @@ import { Card, CardContent } from "@/components/ui/card";
 import { PlusCircle, Mail, History, LogOut } from "lucide-react";
 import { GmailAccountCard } from "@/components/GmailAccountCard";
 import { useAuth } from "@/lib/auth";
+import ClientOnly from "@/components/ClientOnly";
 
 export default function Dashboard() {
+  return (
+    <ClientOnly>
+      <DashboardContent />
+    </ClientOnly>
+  );
+}
+
+function DashboardContent() {
   const [gmailAccounts, setGmailAccounts] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
-  const [isClient, setIsClient] = useState(false);
 
   const router = useRouter();
   const { user, logout } = useAuth();
-
-  // Ensure we are on the client before using hooks that depend on context
-  useEffect(() => {
-    setIsClient(true);
-  }, []);
 
   useEffect(() => {
     const fetchAccounts = async () => {
@@ -37,10 +40,10 @@ export default function Dashboard() {
       }
     };
 
-    if (isClient && user?.email) {
+    if (user?.email) {
       fetchAccounts();
     }
-  }, [isClient, user?.email]);
+  }, [user?.email]);
 
   const handleConnectAccount = async () => {
     try {
@@ -56,18 +59,18 @@ export default function Dashboard() {
 
   const handleDisconnect = async (accountId: string) => {
     try {
-      const res = await fetch(`/api/gmail/accounts/${accountId}`, { method: "DELETE" });
+      const res = await fetch(`/api/gmail/accounts/${accountId}`, {
+        method: "DELETE",
+      });
       if (!res.ok) throw new Error("Failed to disconnect");
-      setGmailAccounts((accounts) => accounts.filter((a) => a.id !== accountId));
+      setGmailAccounts((accounts) =>
+        accounts.filter((a) => a.id !== accountId)
+      );
     } catch (error) {
       console.error(error);
       alert("Unable to disconnect this account.");
     }
   };
-
-  if (!isClient) {
-    return null; // Prevent SSR errors
-  }
 
   if (!user) {
     return (
@@ -129,7 +132,9 @@ export default function Dashboard() {
           {/* Main Content */}
           <div className="flex-1">
             <div className="flex justify-between items-center mb-6">
-              <h2 className="text-2xl font-bold text-indigo-900">Connected Gmail Accounts</h2>
+              <h2 className="text-2xl font-bold text-indigo-900">
+                Connected Gmail Accounts
+              </h2>
               <Button
                 onClick={handleConnectAccount}
                 className="bg-gradient-to-r from-green-500 to-teal-500 hover:from-green-600 hover:to-teal-600 text-white flex items-center"
@@ -146,9 +151,12 @@ export default function Dashboard() {
               <Card className="bg-white border-0 shadow-lg rounded-xl">
                 <CardContent className="p-8 text-center">
                   <Mail className="mx-auto h-16 w-16 text-indigo-300" />
-                  <h3 className="mt-4 text-xl font-medium text-gray-900">No connected accounts</h3>
+                  <h3 className="mt-4 text-xl font-medium text-gray-900">
+                    No connected accounts
+                  </h3>
                   <p className="mt-2 text-gray-500">
-                    Connect your first Gmail account to start sending outreach campaigns
+                    Connect your first Gmail account to start sending outreach
+                    campaigns
                   </p>
                   <Button
                     onClick={handleConnectAccount}

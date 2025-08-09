@@ -1,6 +1,7 @@
 "use client";
 export const dynamic = "force-dynamic";
 
+import ClientOnly from "@/components/ClientOnly";
 import { useState, useEffect } from "react";
 import { useAuth } from "@/lib/auth";
 import { Loader2 } from "lucide-react";
@@ -8,14 +9,15 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 
 export default function HistoryPage() {
-  let user;
-  try {
-    ({ user } = useAuth());
-  } catch {
-    // During build, AuthProvider isn't mounted — avoid crashing
-    return null;
-  }
+  return (
+    <ClientOnly>
+      <HistoryContent />
+    </ClientOnly>
+  );
+}
 
+function HistoryContent() {
+  const { user } = useAuth();
   const [campaigns, setCampaigns] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
