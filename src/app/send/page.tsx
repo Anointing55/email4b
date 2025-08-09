@@ -9,10 +9,15 @@ import { GmailAccountSelector } from "@/components/GmailAccountSelector";
 import { RecipientUploader } from "@/components/RecipientUploader";
 import { Loader2 } from "lucide-react";
 
+type Recipient = {
+  email: string;
+  name?: string;
+};
+
 export default function SendPage() {
   const router = useRouter();
   const [gmailAccountId, setGmailAccountId] = useState("");
-  const [recipients, setRecipients] = useState<string[]>([]);
+  const [recipients, setRecipients] = useState<Recipient[]>([]);
   const [subject, setSubject] = useState("");
   const [body, setBody] = useState("");
   const [loading, setLoading] = useState(false);
