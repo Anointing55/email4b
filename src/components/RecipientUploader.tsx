@@ -1,13 +1,9 @@
-// frontend/src/components/RecipientUploader.tsx
+// src/components/RecipientUploader.tsx
 "use client";
 
 import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
-
-interface Recipient {
-  email: string;
-  domain: string;
-}
+import type { Recipient } from "@/types/recipient"; // ✅ Import shared type
 
 interface RecipientUploaderProps {
   recipients: Recipient[];
