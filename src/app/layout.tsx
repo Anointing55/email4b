@@ -1,24 +1,17 @@
+// src/app/layout.tsx
+'use client';
+
 import './globals.css';
 import { Inter } from 'next/font/google';
-import { metadata as siteMetadata } from './metadata'; // Import central metadata
+import { metadata as siteMetadata } from './metadata';
 import { AuthProvider } from '@/context/AuthContext';
 
-// ✅ Load Inter font
+// Load Inter font
 const inter = Inter({ subsets: ['latin'] });
 
-// ✅ Re-export metadata for Next.js
+// Export metadata
 export const metadata = siteMetadata;
 
-// ✅ Client-only wrapper for providers
-function ClientLayout({ children }: { children: React.ReactNode }) {
-  return (
-    <AuthProvider>
-      {children}
-    </AuthProvider>
-  );
-}
-
-// ✅ Root layout (server component)
 export default function RootLayout({
   children,
 }: {
@@ -26,8 +19,12 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={`${inter.className} bg-gradient-to-br from-indigo-50 to-purple-50`}>
-        <ClientLayout>{children}</ClientLayout>
+      <body
+        className={`${inter.className} bg-gradient-to-br from-indigo-50 to-purple-50`}
+      >
+        <AuthProvider>
+          {children}
+        </AuthProvider>
       </body>
     </html>
   );
