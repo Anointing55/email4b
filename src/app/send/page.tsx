@@ -1,5 +1,4 @@
 "use client";
-
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
@@ -78,7 +77,10 @@ export default function SendPage() {
                 <label className="block text-sm font-medium text-gray-700 mb-2">
                   Upload Recipients
                 </label>
-                <RecipientUploader onChange={setRecipients} />
+                <RecipientUploader
+                  recipients={recipients}
+                  setRecipients={setRecipients}
+                />
                 {recipients.length > 0 && (
                   <p className="mt-1 text-sm text-gray-500">
                     {recipients.length} recipients added
