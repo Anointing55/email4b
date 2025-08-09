@@ -1,15 +1,12 @@
-// src/app/layout.tsx
-'use client';
-
 import './globals.css';
 import { Inter } from 'next/font/google';
 import { metadata as siteMetadata } from './metadata';
-import { AuthProvider } from '@/context/AuthContext';
+import ClientLayout from './ClientLayout';
 
 // Load Inter font
 const inter = Inter({ subsets: ['latin'] });
 
-// Export metadata
+// ✅ Export metadata (server only)
 export const metadata = siteMetadata;
 
 export default function RootLayout({
@@ -22,9 +19,7 @@ export default function RootLayout({
       <body
         className={`${inter.className} bg-gradient-to-br from-indigo-50 to-purple-50`}
       >
-        <AuthProvider>
-          {children}
-        </AuthProvider>
+        <ClientLayout>{children}</ClientLayout>
       </body>
     </html>
   );
