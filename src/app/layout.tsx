@@ -1,29 +1,21 @@
-"use client"; // ⬅️ This makes the layout a Client Component
-
 import './globals.css';
 import { Inter } from 'next/font/google';
 import { metadata as siteMetadata } from './metadata';
-import { AuthProvider } from '@/context/AuthContext';
+import ClientLayout from './ClientLayout';
 
 // Load Inter font
 const inter = Inter({ subsets: ['latin'] });
 
-// ✅ Export metadata (server only)
+// ✅ Server-only metadata
 export const metadata = siteMetadata;
 
-export default function RootLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
-      <body
-        className={`${inter.className} bg-gradient-to-br from-indigo-50 to-purple-50`}
-      >
-        <AuthProvider>
+      <body className={`${inter.className} bg-gradient-to-br from-indigo-50 to-purple-50`}>
+        <ClientLayout>
           {children}
-        </AuthProvider>
+        </ClientLayout>
       </body>
     </html>
   );
