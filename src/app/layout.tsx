@@ -1,3 +1,5 @@
+'use client'; // <-- Make this a client component so AuthProvider works
+
 import './globals.css';
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
@@ -17,7 +19,9 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={`${inter.className} bg-gradient-to-br from-indigo-50 to-purple-50`}>
+      <body
+        className={`${inter.className} bg-gradient-to-br from-indigo-50 to-purple-50`}
+      >
         <AuthProvider>
           {children}
         </AuthProvider>

@@ -3,7 +3,7 @@
 
 import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
-import type { Recipient } from "@/types/recipient"; // ✅ Import shared type
+import type { Recipient } from "@/types/recipient"; // ✅ Shared type
 
 interface RecipientUploaderProps {
   recipients: Recipient[];
@@ -16,14 +16,17 @@ export const RecipientUploader: React.FC<RecipientUploaderProps> = ({
 }) => {
   const [inputValue, setInputValue] = useState("");
 
-  const isValidEmail = (email: string) => {
-    // Corrected email validation regex (escaped dot)
-    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
-  };
+  // ✅ Simple, strict email format check
+  const isValidEmail = (email: string) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 
   const handleAddRecipient = () => {
+    if (!inputValue.trim()) {
+      alert("Please enter at least one email address.");
+      return;
+    }
+
     const emails = inputValue
-      .split(/[\s,]+/) // allow comma, space, or newline
+      .split(/[\s,;]+/) // allow comma, space, semicolon, or newline
       .map((email) => email.trim().toLowerCase())
       .filter((email) => email && isValidEmail(email));
 
@@ -33,7 +36,7 @@ export const RecipientUploader: React.FC<RecipientUploaderProps> = ({
     }
 
     const newRecipients: Recipient[] = emails
-      .filter((email) => !recipients.some((r) => r.email === email)) // avoid duplicates
+      .filter((email) => !recipients.some((r) => r.email === email)) // remove duplicates
       .map((email) => ({
         email,
         domain: email.split("@")[1] || "",
@@ -60,8 +63,8 @@ export const RecipientUploader: React.FC<RecipientUploaderProps> = ({
           type="text"
           value={inputValue}
           onChange={(e) => setInputValue(e.target.value)}
-          placeholder="Enter emails, separated by commas or spaces"
-          className="border border-gray-300 rounded-lg px-3 py-2 flex-1 text-sm"
+          placeholder="Enter emails (comma, space, or semicolon separated)"
+          className="border border-gray-300 rounded-lg px-3 py-2 flex-1 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
         />
         <Button onClick={handleAddRecipient}>Add</Button>
       </div>
@@ -73,10 +76,10 @@ export const RecipientUploader: React.FC<RecipientUploaderProps> = ({
         ) : (
           recipients.map((recipient, index) => (
             <div
-              key={`${recipient.email}-${index}`} // safer unique key
-              className="flex justify-between items-center p-2"
+              key={`${recipient.email}-${index}`}
+              className="flex justify-between items-center p-2 hover:bg-gray-50"
             >
-              <span className="text-sm">{recipient.email}</span>
+              <span className="text-sm truncate">{recipient.email}</span>
               <Button
                 variant="destructive"
                 size="sm"
