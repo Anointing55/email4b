@@ -16,38 +16,53 @@ export default function Dashboard() {
 
   useEffect(() => {
     const fetchAccounts = async () => {
+      setLoading(true);
       try {
         const response = await fetch('/api/gmail/accounts');
+        if (!response.ok) throw new Error('Failed to fetch');
         const data = await response.json();
-        setGmailAccounts(data);
+        setGmailAccounts(Array.isArray(data) ? data : []);
       } catch (error) {
         console.error('Failed to fetch Gmail accounts', error);
+        setGmailAccounts([]); // fallback to empty array
       } finally {
         setLoading(false);
       }
     };
 
-    if (user) fetchAccounts();
-  }, [user]);
+    if (user?.email) fetchAccounts();
+  }, [user?.email]);
 
   const handleConnectAccount = async () => {
     try {
       const response = await fetch('/api/gmail/auth');
+      if (!response.ok) throw new Error('Failed to start OAuth flow');
       const { url } = await response.json();
-      window.location.href = url;
+      if (url) window.location.href = url;
     } catch (error) {
-      console.error('Failed to start OAuth flow', error);
+      console.error(error);
+      alert('Unable to start Gmail connection. Please try again.');
     }
   };
 
   const handleDisconnect = async (accountId: string) => {
     try {
-      await fetch(`/api/gmail/accounts/${accountId}`, { method: 'DELETE' });
-      setGmailAccounts(accounts => accounts.filter(a => a.id !== accountId));
+      const res = await fetch(`/api/gmail/accounts/${accountId}`, { method: 'DELETE' });
+      if (!res.ok) throw new Error('Failed to disconnect');
+      setGmailAccounts((accounts) => accounts.filter((a) => a.id !== accountId));
     } catch (error) {
-      console.error('Failed to disconnect account', error);
+      console.error(error);
+      alert('Unable to disconnect this account.');
     }
   };
+
+  if (!user) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <p className="text-lg text-gray-500">Loading your dashboard...</p>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-indigo-50 to-purple-50">
@@ -57,7 +72,7 @@ export default function Dashboard() {
             Outreach Pilot
           </h1>
           <div className="flex items-center space-x-4">
-            <span className="text-indigo-700 font-medium">{user?.email}</span>
+            <span className="text-indigo-700 font-medium">{user.email}</span>
             <Button
               onClick={logout}
               variant="outline"
@@ -132,7 +147,7 @@ export default function Dashboard() {
               </Card>
             ) : (
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {gmailAccounts.map(account => (
+                {gmailAccounts.map((account) => (
                   <GmailAccountCard
                     key={account.id}
                     account={account}

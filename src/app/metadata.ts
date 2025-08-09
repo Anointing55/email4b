@@ -2,6 +2,7 @@
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
+  metadataBase: new URL('https://email4b.onrender.com'),
   title: 'Outreach Pilot',
   description: 'AI-powered email outreach platform',
   icons: {
@@ -10,7 +11,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: 'Outreach Pilot',
     description: 'AI-powered email outreach platform',
-    url: 'https://yourdomain.com',
+    url: 'https://email4b.onrender.com',
     siteName: 'Outreach Pilot',
     images: [
       {
