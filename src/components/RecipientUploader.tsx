@@ -1,27 +1,55 @@
-import React, { useState } from 'react';
-import { Button } from '@/components/ui/button';
+// frontend/src/components/RecipientUploader.tsx
+"use client";
 
-export const RecipientUploader = ({ 
-  recipients, 
-  setRecipients 
-}: {
-  recipients: any[];
-  setRecipients: (recipients: any[]) => void;
+import React, { useState } from "react";
+import { Button } from "@/components/ui/button";
+
+interface Recipient {
+  email: string;
+  domain: string;
+}
+
+interface RecipientUploaderProps {
+  recipients: Recipient[];
+  setRecipients: (recipients: Recipient[]) => void;
+}
+
+export const RecipientUploader: React.FC<RecipientUploaderProps> = ({
+  recipients,
+  setRecipients,
 }) => {
-  const [inputValue, setInputValue] = useState('');
+  const [inputValue, setInputValue] = useState("");
+
+  const isValidEmail = (email: string) => {
+    // Basic email validation regex
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+  };
 
   const handleAddRecipient = () => {
-    const emails = inputValue.split(',')
-      .map(email => email.trim())
-      .filter(email => email);
-    
-    const newRecipients = emails.map(email => ({
-      email,
-      domain: email.split('@')[1] || ''
-    }));
-    
+    const emails = inputValue
+      .split(",")
+      .map((email) => email.trim().toLowerCase())
+      .filter((email) => email && isValidEmail(email));
+
+    if (emails.length === 0) {
+      alert("Please enter valid email addresses.");
+      return;
+    }
+
+    const newRecipients: Recipient[] = emails
+      .filter((email) => !recipients.some((r) => r.email === email)) // avoid duplicates
+      .map((email) => ({
+        email,
+        domain: email.split("@")[1] || "",
+      }));
+
+    if (newRecipients.length === 0) {
+      alert("All entered emails are already in the list.");
+      return;
+    }
+
     setRecipients([...recipients, ...newRecipients]);
-    setInputValue('');
+    setInputValue("");
   };
 
   const removeRecipient = (index: number) => {
@@ -30,30 +58,39 @@ export const RecipientUploader = ({
 
   return (
     <div className="space-y-4">
+      {/* Email Input */}
       <div className="flex gap-2">
         <input
           type="text"
           value={inputValue}
-          onChange={e => setInputValue(e.target.value)}
+          onChange={(e) => setInputValue(e.target.value)}
           placeholder="Enter emails, separated by commas"
-          className="border border-gray-300 rounded-lg px-3 py-2 flex-1"
+          className="border border-gray-300 rounded-lg px-3 py-2 flex-1 text-sm"
         />
         <Button onClick={handleAddRecipient}>Add</Button>
       </div>
-      
-      <div className="max-h-60 overflow-y-auto">
-        {recipients.map((recipient, index) => (
-          <div key={index} className="flex justify-between items-center py-2 border-b">
-            <span>{recipient.email}</span>
-            <Button 
-              variant="destructive" 
-              size="sm"
-              onClick={() => removeRecipient(index)}
+
+      {/* Recipient List */}
+      <div className="max-h-60 overflow-y-auto border rounded-lg divide-y">
+        {recipients.length === 0 ? (
+          <p className="text-gray-500 text-sm p-3">No recipients added yet.</p>
+        ) : (
+          recipients.map((recipient, index) => (
+            <div
+              key={recipient.email}
+              className="flex justify-between items-center p-2"
             >
-              Remove
-            </Button>
-          </div>
-        ))}
+              <span className="text-sm">{recipient.email}</span>
+              <Button
+                variant="destructive"
+                size="sm"
+                onClick={() => removeRecipient(index)}
+              >
+                Remove
+              </Button>
+            </div>
+          ))
+        )}
       </div>
     </div>
   );
