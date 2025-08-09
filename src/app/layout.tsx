@@ -1,3 +1,5 @@
+"use client"; // ⬅️ This makes the layout a Client Component
+
 import './globals.css';
 import { Inter } from 'next/font/google';
 import { metadata as siteMetadata } from './metadata';
