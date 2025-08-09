@@ -13,18 +13,20 @@ export const Card = ({ children, className = '' }: CardProps) => {
   );
 };
 
-export const CardHeader = ({ children }: { children: React.ReactNode }) => (
-  <div className="mb-4">{children}</div>
+export const CardHeader = ({ children, className = '' }: CardProps) => (
+  <div className={`mb-4 ${className}`}>{children}</div>
 );
 
-export const CardTitle = ({ children }: { children: React.ReactNode }) => (
-  <h3 className="text-xl font-semibold text-gray-900">{children}</h3>
+export const CardTitle = ({ children, className = '' }: CardProps) => (
+  <h3 className={`text-xl font-semibold text-gray-900 ${className}`}>
+    {children}
+  </h3>
 );
 
-export const CardContent = ({ children }: { children: React.ReactNode }) => (
-  <div className="mb-4">{children}</div>
+export const CardContent = ({ children, className = '' }: CardProps) => (
+  <div className={`mb-4 ${className}`}>{children}</div>
 );
 
-export const CardFooter = ({ children }: { children: React.ReactNode }) => (
-  <div className="mt-4">{children}</div>
+export const CardFooter = ({ children, className = '' }: CardProps) => (
+  <div className={`mt-4 ${className}`}>{children}</div>
 );
